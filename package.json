@@ -1,0 +1,19 @@
+{
+  "name": "trello-tasks",
+  "version": "1.0.0",
+  "description": "Create your week trello card",
+  "main": "src/trellocard.js",
+  "author": "Zeh Fernandes <ozehfernandes@gmail.com>",
+  "contributors": [],
+  "license": "MIT",
+  "giskard": {
+    "module": "Trellocard",
+    "created": "Tue Jun 07 2016 23:23:32 GMT-0300 (BRT)",
+    "help": {
+      "trello card": "Eu(r2d3) irei criar seus cards trello da semana"
+    }
+  },
+  "dependencies": {
+    "node-trello": "^1.1.2"
+  }
+}
