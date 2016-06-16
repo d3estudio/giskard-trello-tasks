@@ -13,7 +13,7 @@ function getRightList(boardId) {
     return new Promise((resolve, reject) => {
         t.get(`/1/boards/${boardId}/lists`, (err, data) => {
             if (err) {
-                reject(Error("Network Error: " + err));
+                reject('Não consegui achar a lista de tarefas :disappointed:');
             }
             var boardList = data.sort((a) => {
                 return new Date(a.name.split(" - "));
@@ -29,7 +29,7 @@ function getUserID(username) {
             query: username
         }, (err, data) => {
             if (err) {
-                reject(Error("Network Error: " + err));
+                reject('Não consegui achar seu usuário :disappointed:');
             }
             resolve(data[0].id);
         });
@@ -37,56 +37,95 @@ function getUserID(username) {
 }
 
 
-function createCard(idList) {
+function createCard(idList, username) {
     return new Promise((resolve, reject) => {
-        getUserID(username).then((userID) => {
-            var newCard = {
-                name: username,
-                idList: idList,
-                idMembers: userID
-            }
-            t.post("1/cards", newCard, (err, data) => {
-                if (err) {
-                    reject(Error(err));
+        getUserID(username)
+            .then((userID) => {
+                var newCard = {
+                    name: username,
+                    idList: idList,
+                    idMembers: userID
                 }
-                resolve(data.id);
+                t.post("1/cards", newCard, (err, data) => {
+                    if (err) {
+                        reject('Não consegui criar seu card :disappointed:');
+                    }
+                    resolve(data.id);
+                });
             });
+    });
+}
+
+function commitChecklistItem(newChecklist) {
+    return new Promise((resolve, reject) => {
+        t.post("/1/checklists", newChecklist, (err, data) => {
+            if (err) {
+                console.log(err);
+                return reject('Não consegui criar os checklists :disappointed:');
+            }
+            resolve();
         });
     });
 }
 
 function createChecklist(idCard) {
-    return new Promise((resolve, reject) => {
-        checkModel.forEach((value, key) => {
-            var newChecklist = {
-                idCard: idCard,
-                name: value,
-                pos: key
-            }
-            t.post("/1/checklists", newChecklist, (err, data) => {
-                if (err) {
-                    reject(Error(err));
-                }
-            });
-        });
-        resolve();
-    });
+    var i = 0;
+    console.log(idCard);
+    return Promise.all(checkModel.map((value) => commitChecklistItem({
+        idCard: idCard,
+        name: value,
+        pos: i++
+    })));
 }
 
 var Trellocard = function(bot) {
     Base.call(this, bot);
     this.respond(/(.*)?trello card(.*)?/i, (response) => {
         username = response.user.name;
-        response.reply("Só um segundo.");
+        response.sendTyping();
         getRightList("SjRJiE2O")
             .then((idList) => {
-                return createCard(idList);
+                return response.user.getSocialNetworkHandle('trello')
+                    .then((handle) => {
+                        return Promise.resolve({
+                            handle: handle,
+                            list: idList
+                        });
+                    })
+                    .catch((err) => {
+                        return response.ask('Qual seu usário no Trello?', this.Context.REGEX, /(.*)/)
+                            .then((answer) => {
+                                return response.user.updateSocialNetworkHandle('trello', answer.match[1])
+                                    .then(() => {
+                                        return Promise.resolve({
+                                            handle: answer.match[1],
+                                            list: idList
+                                        });
+                                    })
+                                    .catch((err) => {
+                                        return Promise.reject('Não consegui memorizar seu usuário :disappointed:');
+                                    })
+                            })
+                            .catch((err) => {
+                                return Promise.reject('Preciso do seu usuário no trello! :disappointed:');
+                            });
+                    });
+                //return createCard(idList);
+            })
+            .then((data) => {
+                return createCard(data.list, data.handle);
             })
             .then((idCard) => {
-                return createChecklist(idCard);
+                return createChecklist(idCard)
+                .catch((err) => {
+                    return Promise.reject(err);
+                });
             })
             .then(() => {
                 response.reply("Feito, amiguinho.");
+            })
+            .catch((err) => {
+                response.reply(err);
             });
     });
 };
