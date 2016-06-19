@@ -1,10 +1,10 @@
 {
   "name": "trello-tasks",
-  "version": "1.0.1",
-  "description": "Create your week trello card",
+  "version": "1.0.2",
+  "description": "Creates your weekly trello card",
   "main": "src/trellocard.js",
   "author": "Zeh Fernandes <ozehfernandes@gmail.com>",
-  "contributors": [],
+  "contributors": ["Jonathan Querubina <jotadev@me.com>", "Victor Gama <hey@vito.io>"],
   "license": "MIT",
   "giskard": {
     "module": "Trellocard",
