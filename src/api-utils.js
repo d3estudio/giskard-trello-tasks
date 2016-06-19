@@ -72,18 +72,38 @@ module.exports = {
     },
 
     /**
-     * Creates a new checklist item with the given data
+     * Creates a new checklist with the given data
      * @param  {AnyObject} data   Object describing the new checklist item
      * @param  {logger} logger Logger instance, bound with module data, used
      *                         for debugging purposes
      * @return {Promise}        Promise that will be resolved or rejected
      *                          depending on the operation result
      */
-    createChecklistItemWithData: function(data, logger) {
+    createChecklistWithData: function(data, logger) {
         return new Promise((resolve, reject) => {
             this.getApiClient().post("/1/checklists", data, (err, data) => {
                 if (err) {
                     logger.error(err);
+                    return reject();
+                }
+                resolve(data);
+            });
+        });
+    },
+
+    /**
+     * Creates a checklist item on a given list id, using the provided data
+     * as argument
+     * @param  {String} listId Id of the list where the item should be created
+     * @param  {AnyObject} data   Object describing the item to be added to the
+     *                            list
+     * @return {Promise}        Promise that will be rejected or resolved
+     *                          depending on the operation result
+     */
+    createChecklistItemWithDataOnList: function(listId, data) {
+        return new Promise((resolve, reject) => {
+            this.getApiClient().post(`/1/checklists/${listId}/checkItems`, data, (err, data) => {
+                if (err) {
                     return reject();
                 }
                 resolve();
