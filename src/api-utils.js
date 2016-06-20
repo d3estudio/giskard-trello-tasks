@@ -63,8 +63,8 @@ module.exports = {
             this.getApiClient().get("/1/search/members", {
                 query: handle
             }, (err, data) => {
-                if (err) {
-                    return reject(`Não consegui achar seu usuário! Tem certeza que \`${handle}\` está certo? :disappointed:`);
+                if (err || !data || data.length < 1) {
+                    return reject(`Não consegui achar seu usuário! Tem certeza que \`${handle}\` está certo? :confused:`);
                 }
                 resolve(data[0].id);
             });

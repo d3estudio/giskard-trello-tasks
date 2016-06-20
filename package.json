@@ -1,6 +1,6 @@
 {
   "name": "trello-tasks",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Creates your weekly trello card",
   "main": "src/trellocard.js",
   "author": "Zeh Fernandes <ozehfernandes@gmail.com>",
