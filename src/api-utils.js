@@ -113,7 +113,7 @@ module.exports = {
 
     userHasCard: function(userId, listId) {
         return new Promise((resolve, reject) => {
-            this.getApiClient().post(`/1/lists/${listId}/cards`, data, (err, data) => {
+            this.getApiClient().get(`/1/lists/${listId}/cards`, (err, data) => {
                 if (err) {
                     return reject(err);
                 }
