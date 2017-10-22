@@ -29,7 +29,7 @@ var TrelloCard = function() {
 };
 
 TrelloCard.prototype.createCardForUsername = function(name, cardTitle) {
-    return ApiUtils.getUserIdForHandle(handle)
+    return ApiUtils.getUserIdForHandle(name)
         .then(userId => {
             return ApiUtils.getListFromBoard('SjRJiE2O')
                 .then(listId => ({ userId, listId }));
