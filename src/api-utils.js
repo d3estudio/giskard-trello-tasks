@@ -109,5 +109,16 @@ module.exports = {
                 resolve();
             });
         });
+    },
+
+    userHasCard: function(userId, listId) {
+        return new Promise((resolve, reject) => {
+            this.getApiClient().post(`/1/lists/${listId}/cards`, data, (err, data) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(!!data.find(i => i.idMembers.indexOf(userId) > -1));
+            });
+        });
     }
 }
