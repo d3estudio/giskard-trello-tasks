@@ -24,7 +24,8 @@ var TrelloCard = function() {
                 }
                 response.reply(err)
             })
-            .then(handle => this.createCardForUsername('victorgama', 'Vito'));
+            .then(handle => this.createCardForUsername('victorgama', 'Vito'))
+            .then(handle => this.createCardForUsername('joaomarcosdesouza', 'João Marcos'));
     });
 };
 
