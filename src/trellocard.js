@@ -24,7 +24,10 @@ var TrelloCard = function() {
                 }
                 response.reply(err)
             })
-            .then(handle => this.createCardForUsername('victorgama', 'Vito'))
+            .then(handle => {
+                this.createCardForUsername('victorgama', 'Vito')
+                return Promise.resolve(true);
+            })
             .then(handle => this.createCardForUsername('joaomarcosdesouza', 'João Marcos'));
     });
 };
